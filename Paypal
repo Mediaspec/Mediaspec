@@ -156,3 +156,107 @@ curl -v https://api-m.sandbox.paypal.com/v1/oauth2/token \
     "method": "GET"
   }]
 }
+curl -v -X GET https://api-m.sandbox.paypal.com/v2/payments/authorizations/0VF52814937998046 \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer Access-Token"
+{
+  "id": "0VF52814937998046",
+  "status": "CREATED",
+  "amount": {
+    "value": "10.99",
+    "currency_code": "USD"
+  },
+  "invoice_id": "INVOICE-123",
+  "seller_protection": {
+    "status": "ELIGIBLE",
+    "dispute_categories": [
+      "ITEM_NOT_RECEIVED",
+      "UNAUTHORIZED_TRANSACTION"
+    ]
+  },
+  "expiration_time": "2017-10-10T23:23:45Z",
+  "create_time": "2017-09-11T23:23:45Z",
+  "update_time": "2017-09-11T23:23:45Z",
+  "links": [
+    {
+      "rel": "self",
+      "method": "GET",
+      "href": "https://api-m.paypal.com/v2/payments/authorizations/0VF52814937998046"
+    },
+    {
+      "rel": "capture",
+      "method": "POST",
+      "href": "https://api-m.paypal.com/v2/payments/authorizations/0VF52814937998046/capture"
+    },
+    {
+      "rel": "void",
+      "method": "POST",
+      "href": "https://api-m.paypal.com/v2/payments/authorizations/0VF52814937998046/void"
+    },
+    {
+      "rel": "reauthorize",
+      "method": "POST",
+      "href": "https://api-m.paypal.com/v2/payments/authorizations/0VF52814937998046/reauthorize"
+    }
+  ]
+}
+curl -v -X POST https://api-m.sandbox.paypal.com/v2/payments/authorizations/0VF52814937998046/capture \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer Access-Token" \
+-H "PayPal-Request-Id: 123e4567-e89b-12d3-a456-426655440010" \
+-d '{
+  "amount": {
+    "value": "10.99",
+    "currency_code": "USD"
+  },
+  "invoice_id": "INVOICE-123",
+  "final_capture": true,
+  "note_to_payer": "If the ordered color is not available, we will substitute with a different color free of charge.",
+  "soft_descriptor": "Bob's Custom Sweaters"
+}'
+<div id="smart-button-container">
+      <div style="text-align: center;">
+        <div id="paypal-button-container"></div>
+      </div>
+    </div>
+  <script src="https://www.paypal.com/sdk/js?client-id=ATuJ1FVmDkvnKSSMUJbOZd-jnKqiqVlFnu4HvZAc9SryLtk9i9Yv5PjP7SNo8qok9IeBYUkzn8jWMFUT&enable-funding=venmo&currency=USD" data-sdk-integration-source="button-factory"></script>
+  <script>
+    function initPayPalButton() {
+      paypal.Buttons({
+        style: {
+          shape: 'rect',
+          color: 'blue',
+          layout: 'vertical',
+          label: 'paypal',
+          
+        },
+
+        createOrder: function(data, actions) {
+          return actions.order.create({
+            purchase_units: [{"amount":{"currency_code":"USD","value":1.07,"breakdown":{"item_total":{"currency_code":"USD","value":1},"shipping":{"currency_code":"USD","value":0},"tax_total":{"currency_code":"USD","value":0.07}}}}]
+          });
+        },
+
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(orderData) {
+            
+            // Full available details
+            console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+
+            // Show a success message within this page, e.g.
+            const element = document.getElementById('paypal-button-container');
+            element.innerHTML = '';
+            element.innerHTML = '<h3>Thank you for your payment!</h3>';
+
+            // Or go to another URL:  actions.redirect('thank_you.html');
+            
+          });
+        },
+
+        onError: function(err) {
+          console.log(err);
+        }
+      }).render('#paypal-button-container');
+    }
+    initPayPalButton();
+  </script>
