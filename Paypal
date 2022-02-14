@@ -118,3 +118,41 @@ onAuthorize: function(data, actions)
     window.alert('Thank you for your purchase!');
   });
 }
+curl -v https://api-m.sandbox.paypal.com/v1/oauth2/token \
+  -H "Accept: application/json" \
+  -H "Accept-Language: en_US" \
+  -u "bad_client_id:secret" \
+  -d "grant_type=client_credentials"
+{
+  "error":"invalid_client",
+  "error_description":"Client Authentication failed"
+}
+{  
+  "links": [{
+    "href": "https://api-m.paypal.com/v1/payments/sale/36C38912MN9658832",
+    "rel": "self",
+    "method": "GET"
+  }, {
+    "href": "https://api-m.paypal.com/v1/payments/sale/36C38912MN9658832/refund",
+    "rel": "refund",
+    "method": "POST"
+  }, {
+    "href": "https://api-m.paypal.com/v1/payments/payment/PAY-5YK922393D847794YKER7MUI",
+    "rel": "parent_payment",
+    "method": "GET"
+  }
+{  
+  "links": [{
+    "href": "https://api-m.paypal.com/v1/payments/sale/36C38912MN9658832",
+    "rel": "self",
+    "method": "GET"
+  }, {
+    "href": "https://api-m.paypal.com/v1/payments/sale/36C38912MN9658832/refund",
+    "rel": "refund",
+    "method": "POST"
+  }, {
+    "href": "https://api-m.paypal.com/v1/payments/payment/PAY-5YK922393D847794YKER7MUI",
+    "rel": "parent_payment",
+    "method": "GET"
+  }]
+}
